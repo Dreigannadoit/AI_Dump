@@ -1,5 +1,6 @@
 import os
 import json
+from http.client import responses
 from typing import TypedDict
 
 from dotenv import load_dotenv
@@ -28,7 +29,7 @@ class ChatState(TypedDict):
 
 
 def connect():
-    mail_box = MailBox(IMAP_HOST)
+    mail_box = MailBox(IMAP_HOST, port=993)
     mail_box.login(IMAP_USER, IMAP_PASSWORD, initial_folder=IMAP_FOLDER)
 
     return mail_box
@@ -88,3 +89,45 @@ llm = llm.bind_tools([list_unread_emails, summarize_email])
 raw_llm =init_chat_model(CHAT_MODEL, model_provider='ollama')
 
 
+def llm_node(state):
+    response = llm.invoke(state['messages'])
+
+    return {'messages': state['messages'] + [response]}
+
+
+def router(state):
+    last_message = state['messages'][-1]
+
+    return 'tools' if getattr(last_message, 'tool_calls', None) else 'end'
+
+
+tool_node = ToolNode([list_unread_emails, summarize_email])
+
+builder = StateGraph(ChatState)
+builder.add_node('llm', llm_node)
+builder.add_node('tools', tool_node)
+builder.add_edge(START, 'llm')
+builder.add_edge('tools', 'llm')
+builder.add_conditional_edges('llm', router, {'tools' : 'tools', 'end': END})
+
+graph = builder.compile()
+
+if __name__ == '__main__':
+    state = {'messages': []}
+
+    print('Type an instruction or "quit". \n')
+
+    while True:
+        user_message = input('> ')
+
+        if user_message.lower() == 'quit':
+            break
+
+        state['messages'].append({
+            'role' : 'user',
+            'content': user_message,
+        })
+
+        state = graph.invoke(state)
+
+        print(state['messages'][-1].content, '\n')
