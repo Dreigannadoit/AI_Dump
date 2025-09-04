@@ -59,7 +59,32 @@ def list_unread_emails():
     return response
 
 
+@tool
 def summarize_email(uid):
-    """Summarize an e-mail given its IMAP UID. Return a short summary of the e-mail content / body in plain text."""
+    """Summarize a single e-mail given its IMAP UID. Return a short summary of the e-mail content / body in plain text."""
 
-    
+    print("Summarize Email Tool Called", uid)
+
+    with connect() as mb:
+        mail = next(mb.fetch(AND(uid=uid), mark_seen=False), None)
+
+        if not mail:
+            return f'Could not summarize email with UID {uid}'
+
+        prompt = (
+            "Summarize this e-mail concisely: \n\n"
+                f"Subject: {mail.subject}\n"
+                f"Sender: {mail.from_}\n"
+                f"Date: {mail.date}\n\n"
+                f"{mail.text or mail.html}\n"
+        )
+
+        return raw_llm.invoke(prompt).content
+
+
+llm = init_chat_model(CHAT_MODEL, model_provider='ollama')
+llm = llm.bind_tools([list_unread_emails, summarize_email])
+
+raw_llm =init_chat_model(CHAT_MODEL, model_provider='ollama')
+
+
