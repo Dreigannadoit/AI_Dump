@@ -103,9 +103,16 @@ def router(state):
 
 tool_node = ToolNode([list_unread_emails, summarize_email])
 
+
+def tools_node(state):
+    result = tool_node.invoke(state)
+
+    return {'messages': state['messages'] + result['messages']}
+
+
 builder = StateGraph(ChatState)
 builder.add_node('llm', llm_node)
-builder.add_node('tools', tool_node)
+builder.add_node('tools', tools_node)
 builder.add_edge(START, 'llm')
 builder.add_edge('tools', 'llm')
 builder.add_conditional_edges('llm', router, {'tools' : 'tools', 'end': END})
