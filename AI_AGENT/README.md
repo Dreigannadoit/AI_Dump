@@ -3,7 +3,7 @@
 
 I wanted experiment with different LLM's that my computer can take. 
 
-This project uses the Ollama - qwen3:8b model to interpret emails and do certain tasks like read emails, and categorize them,
+This project uses the Ollama - qwen3:8b model to interpret emails and do certain tasks like read emails, and categorize them. I plan to also add a web-based GUI using react
 
 ### Connect Agent to E-Mail Inbox
 
