@@ -4,7 +4,6 @@ from http.client import responses
 from typing import TypedDict
 
 from dotenv import load_dotenv
-from imap_client import IMAPClient
 
 from imap_tools import MailBox, AND
 
