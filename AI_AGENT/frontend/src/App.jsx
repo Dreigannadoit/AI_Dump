@@ -1,4 +1,3 @@
-// src/App.jsx
 import { useState } from "react";
 
 function App() {
@@ -29,27 +28,29 @@ function App() {
   }
 
   return (
-    <div className="p-4 max-w-lg mx-auto">
-      <div className="h-96 overflow-y-auto border rounded p-2 mb-2 bg-gray-50">
+    <div className="app-ai-agent">
+      <div className="chat">
         {messages.map((msg, i) => (
-          <div key={i} className={`mb-2 ${msg.role === "user" ? "text-right" : "text-left"}`}>
+          <div key={i} className={`${msg.role === "user" ? "user" : "chatbot"}`}>
             <span
-              className={`inline-block px-3 py-2 rounded-lg ${msg.role === "user" ? "bg-blue-500 text-white" : "bg-gray-200"
+              className={` ${msg.role === "user" ? "user-msg" : "chatbot-msg"
                 }`}
             >
+              <p>{` ${msg.role === "user" ? "You" : "Chatbot"
+                }`}</p>
               {msg.content}
             </span>
           </div>
         ))}
       </div>
-      <form onSubmit={sendMessage} className="flex">
+      <form onSubmit={sendMessage} className="text_field">
         <input
-          className="flex-grow border rounded-l px-3 py-2"
+          className=""
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Type a message..."
         />
-        <button className="bg-blue-500 text-white px-4 rounded-r">Send</button>
+        <button className="">Send</button>
       </form>
     </div>
   );
