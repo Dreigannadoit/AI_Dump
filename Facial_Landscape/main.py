@@ -4,4 +4,4 @@ import mediapipe as mp
 # Initialize MediaPipe FaceMesh
 
 mp_face_mesh = mp.solutions.face_mesh
-face_mesh = mp_face_mesh.FaceMesh()
+face_mesh = mp_face_mesh.FaceMesh( static_image_mode=False, max_num_faces = 3 )
