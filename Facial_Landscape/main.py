@@ -20,3 +20,10 @@ while cap.isOpened():
         print("Ignoring empty camera frame.")
         continue
 
+
+    frame = cv2.flip(frame, 1)
+
+    rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
+    # Process the image and find face mesh
+    
