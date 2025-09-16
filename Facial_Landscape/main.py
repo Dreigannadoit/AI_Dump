@@ -26,4 +26,7 @@ while cap.isOpened():
     rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
     # Process the image and find face mesh
-    
+    results = face_mesh.process(rgb_frame)
+
+    if cv2.waitKey(1) & 0xFF == ord('d'):
+        break
