@@ -15,4 +15,8 @@ cap = cv2.VideoCapture(0)
 
 while cap.isOpened():
     success, frame = cap.read()
-    
+
+    if not success:
+        print("Ignoring empty camera frame.")
+        continue
+
